@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"name": "MemFS - ArcGIS",
+			"uri": "memfs:/"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "..\\rest_oauth_tests"
+		},
+		{
+			"path": "..\\accela-rest-nodejs"
+		},
+		{
+			"path": "..\\webforms"
+		}
+	],
+	"settings": {}
+}

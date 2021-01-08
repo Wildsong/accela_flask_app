@@ -1,0 +1,38 @@
+version: '3.7'
+volumes:
+  cache:
+      name: rabbitmq_data
+
+networks:
+  proxy_net:
+    name: proxy_net
+    external: true
+
+#configs:
+#  mapproxy_env:
+#    file: ./mapproxy_env
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    env_file: .env
+    volumes:
+      - cache:/data
+    networks:
+      proxy_net:
+    ports:
+      - "16572:16572"
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        window: 15s
+
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+#      interval: 10s
+#      timeout: 10s
+#      retries: 3
+#      start_period: 30s
+

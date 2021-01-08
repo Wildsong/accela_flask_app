@@ -1,0 +1,20 @@
+.navbar {
+    background-color: rgb(151, 184, 212);
+}
+
+#loading {
+    width: 35px;
+    height: 35px;
+    display: none;
+    background: url(/static/loading.gif) no-repeat;
+    cursor: wait;
+}
+
+table {
+    border-color: #eee;
+    border-collapse: collapse;
+}
+
+thead {
+    border-color: #eee;
+}

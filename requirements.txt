@@ -1,0 +1,14 @@
+# Sadly arcgis, numpy and DLLs don't get along with python>3.7 on Windows.
+python=3.6.12
+arcgis>=1.8.3
+bs4>=4.9
+tzlocal>=2.1
+autopep8
+requests
+flask>=1.1.2
+flask-bootstrap>=3.2
+flask-wtf>=0.14
+pytz
+jinja2>=2.11.2
+redis>=3.2.100
+celery>=5.0.2
