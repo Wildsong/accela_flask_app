@@ -11,4 +11,8 @@ flask-wtf>=0.14
 pytz
 jinja2>=2.11.2
 redis>=3.2.100
-celery>=5.0.2
+#
+# I wonder if I need the helper since it forces an older version of celery
+#celery>=5.0.2
+celery>=3.1.25
+flask-celery-helper>=1.1.0
