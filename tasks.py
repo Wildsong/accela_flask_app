@@ -8,7 +8,7 @@ celery -A tasks worker -l info
 """
 from celery import Celery
 
-REDIS_URL = "redis://localhost:6379/0"
+REDIS_URL = "redis://cc-testmaps:6379/0"
 app = Celery("tasks", broker=REDIS_URL, backend=REDIS_URL)
 
 @app.task(name='query.parcels')
