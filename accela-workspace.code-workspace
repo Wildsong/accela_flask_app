@@ -15,6 +15,12 @@
 		},
 		{
 			"path": "..\\webforms"
+		},
+		{
+			"path": "../Mastering-Flask-Web-Development-Second-Edition"
+		},
+		{
+			"path": "../flask_template"
 		}
 	],
 	"settings": {}

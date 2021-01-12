@@ -16,7 +16,7 @@ API key and the secret key in the .env file.
 I use Conda to manage python environments, so...
 
 ```bash
-conda create --name=accela python=3.6.12
+conda create --name=accela
 conda install --name=accela --file=requirements.txt
 conda activate accela
 ```

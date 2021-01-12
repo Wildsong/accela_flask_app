@@ -1,7 +1,4 @@
 version: '3.7'
-volumes:
-  cache:
-      name: rabbitmq_data
 
 networks:
   proxy_net:
@@ -16,12 +13,11 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     env_file: .env
-    volumes:
-      - cache:/data
     networks:
       proxy_net:
     ports:
-      - "16572:16572"
+      - "15672:15672"
+      - "5672:5672"
     deploy:
       mode: global
       restart_policy:

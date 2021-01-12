@@ -1,4 +1,7 @@
+from logging import DEBUG
 import os
+
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 # In PRODUCTION conda sets up the environment,
 # so look in ~/.conda/envs/covid/etc/conda/activate.d/env_vars.sh
@@ -16,7 +19,21 @@ class Config(object):
 # Where data live
     TABLE_URL = os.environ.get('TABLE_URL')
 
+#    CELERY_BROKER_URL = "amqp://" \
+#        + os.environ.get('RABBITMQ_DEFAULT_USER') \
+#        + ':' + os.environ.get('RABBITMQ_DEFAULT_PASSWORD') \
+#        + '@' + os.environ.get('RABBITMQ_SERVER') + '//'
+#    CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+
     pass
+
+class ProdConfig(Config):
+    DEBUG = False
+
+
+class DevConfig(Config):
+    DEBUG = True
+
 
 if __name__ == "__main__":
 
