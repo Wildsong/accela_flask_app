@@ -19,12 +19,6 @@ class Config(object):
 # Where data live
     TABLE_URL = os.environ.get('TABLE_URL')
 
-#    CELERY_BROKER_URL = "amqp://" \
-#        + os.environ.get('RABBITMQ_DEFAULT_USER') \
-#        + ':' + os.environ.get('RABBITMQ_DEFAULT_PASSWORD') \
-#        + '@' + os.environ.get('RABBITMQ_SERVER') + '//'
-#    CELERY_RESULT_BACKEND = CELERY_BROKER_URL
-
     pass
 
 class ProdConfig(Config):

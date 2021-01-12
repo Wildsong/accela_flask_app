@@ -1,10 +1,10 @@
 # Sadly arcgis, numpy and DLLs don't get along with python>3.7 on Windows.
-#python=3.6.12
-
+# Sadly there seem to be problems using newer Pythons with celery, too.
+python=3.6.12
 arcgis>=1.8.3
 bs4>=4.9
 tzlocal>=2.1
-autopep8
+autopep8>=1.5.4
 requests
 flask>=1.1.2
 flask-bootstrap>=3.2
@@ -14,9 +14,5 @@ pytz
 jinja2>=2.11.2
 blinker>=1.4
 
-redis>=3.2.100
-#
-# I wonder if I need the helper since it forces an older version of celery
-#celery>=5.0.2
-#celery>=3.1.25
-#flask-celery-helper>=1.1.0
+celery>=5.0.2
+redis-py>=3.5.3
