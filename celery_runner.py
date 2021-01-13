@@ -1,8 +1,7 @@
 """
-    Celery launches a new Flask app for each process. Weird concept.
-    Anyway, this is where it all gets started.
+    celery_runner launches workers.
     
-    Based on the example in Chapter 10 of "Mastering Flask Web Development".
+    Based on the example in Chapter 9 of "Mastering Flask Web Development".
 """
 import os
 from webapp import create_app

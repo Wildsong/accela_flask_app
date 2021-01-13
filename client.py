@@ -1,4 +1,6 @@
 from tasks import add
 
-add.delay(4,4)
+# This queues the "add" but does not 
+# return any result because we're asynchronous.
+result = add.delay(4,4)
 

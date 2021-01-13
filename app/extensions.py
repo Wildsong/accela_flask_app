@@ -3,6 +3,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from celery import Celery
 
 bootstrap = Bootstrap()
-celery = Celery(broker="redis://localhost:6379/0")
 debug_toolbar = DebugToolbarExtension()
 
+REDIS_URL = "redis://cc-testmaps:6379/0"
+app = Celery("tasks", broker=REDIS_URL, backend=REDIS_URL)

@@ -21,6 +21,9 @@
 		},
 		{
 			"path": "../flask_template"
+		},
+		{
+			"path": "../pylette"
 		}
 	],
 	"settings": {}

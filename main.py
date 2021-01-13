@@ -7,4 +7,4 @@ app = create_app('config.%sConfig' % env.capitalize())
 
 if __name__ == '__main__':
     print("version:", version)
-    app.run(host=os.environ.get('FLASK_HOST'), port=os.environ.get('FLASK_PORT'))
+    app.run(port=5001)

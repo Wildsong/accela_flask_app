@@ -1,22 +1,81 @@
 version: '3.7'
 
+# Starts three services,
+#
+# redis, a message queue
+# webapp, a web app implemented with flask
+# worker, a celery app
+#
+
+networks:
+  proxy_net:
+    name: proxy_net
+    external: true
+
 services:
-
-# flask:
-
   redis:
-  # This image is based on Debian
-  # there is also an image based on Alpine but it uses an older Redis release.
+  # This image is based on Debian;
+  # there is an image based on Alpine but it uses an old Redis release.
     image: redis:latest
     env_file: docker.env
-    ports:
-      - "6379:6379"
+#    ports:
+#      - "6379:6379" # This port only has to be visible inside this webapp.
     deploy:
       mode: global
       restart_policy:
         condition: on-failure
         delay: 5s
         window: 15s
+    networks:
+      proxy_net:
+        aliases:
+          - redis
+
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: wildsong/web:latest
+#    command: python3 ./scripts/start_app.py
+    command: python3 ./scripts/start_test_app.py
+    volumes:
+      - .:/srv/accela 
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
+    ports:
+      - "5001:5001"
+#    env_file: .env
+#    environment:
+#      VIRTUAL_HOST: ${FLASK_HOST}
+#      VIRTUAL_PORT: ${FLASK_PORT}
+#      NETWORK_ACCESS: internal
+#      LETSENCRYPT_HOST: ${FLASK_HOST}
+#      LETSENCRYPT_MAIL: ${MY_EMAIL}
+#      PORTAL_URL: ${PORTAL_URL}
+    networks:
+      proxy_net:
+        aliases:
+          - webapp
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python3 ./scripts/start_celery.py
+    volumes:
+      - .:/srv/accela
+    ports:
+      - "5002:5002"
+    links:
+      - redis
+    environment:
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+    networks:
+      proxy_net:
+        aliases:
+          - worker
+
 
 #    healthcheck:
 #      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
