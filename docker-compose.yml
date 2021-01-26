@@ -17,7 +17,7 @@ services:
   # This image is based on Debian;
   # there is an image based on Alpine but it uses an old Redis release.
     image: redis:latest
-    env_file: docker.env
+#    env_file: docker.env
 #    ports:
 #      - "6379:6379" # This port only has to be visible inside this webapp.
     deploy:
@@ -35,47 +35,47 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: wildsong/web:latest
-#    command: python3 ./scripts/start_app.py
-    command: python3 ./scripts/start_test_app.py
-    volumes:
-      - .:/srv/accela 
-      - "/etc/localtime:/etc/localtime:ro"
-      - "/etc/timezone:/etc/timezone:ro"
-    ports:
-      - "5001:5001"
+    image: wildsong/accela:latest
 #    env_file: .env
-#    environment:
+    environment:
+      - PYTHONPATH=/srv
+      - FLASK_APP=start_app
 #      VIRTUAL_HOST: ${FLASK_HOST}
 #      VIRTUAL_PORT: ${FLASK_PORT}
 #      NETWORK_ACCESS: internal
 #      LETSENCRYPT_HOST: ${FLASK_HOST}
 #      LETSENCRYPT_MAIL: ${MY_EMAIL}
-#      PORTAL_URL: ${PORTAL_URL}
+      # without these, flask app cannot find redis.
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+    command: ["flask", "run"]
+    volumes:
+      - .:/srv 
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
+    ports:
+      - 5001:5001
+    user: app
     networks:
       proxy_net:
         aliases:
           - webapp
 
   worker:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: python3 ./scripts/start_celery.py
-    volumes:
-      - .:/srv/accela
-    ports:
-      - "5002:5002"
-    links:
-      - redis
+    image: wildsong/accela:latest
     environment:
+      - PYTHONPATH=/srv
+      # without these, celery tries to connect to RabbitMQ instead of REDIS.
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/0
+    command: celery --app=celery_worker worker --loglevel=info
+    volumes:
+      - .:/srv
+    user: app
     networks:
       proxy_net:
         aliases:
           - worker
-
 
 #    healthcheck:
 #      test: ["CMD", "curl", "-f", "http://localhost:8080/"]

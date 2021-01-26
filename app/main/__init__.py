@@ -1,4 +1,12 @@
+from flask import Blueprint
+import unittest
 
-def create_module(app, **kwargs):
-    from .controllers import main_blueprint
-    app.register_blueprint(main_blueprint)
+main = Blueprint('main', __name__)
+
+from . import views
+
+class MainTest(unittest.TestCase):
+    def test_views(self):
+        self.assertTrue(True);
+
+

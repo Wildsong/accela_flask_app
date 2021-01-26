@@ -13,41 +13,60 @@ API key and the secret key in the .env file.
 
 ### Development
 
-I use Conda to manage python environments, so...
+During development, I run Redis in a docker but start and run the web app
+and the celery worker directly. This means I can start a shell and launch
+the celery worker and then run VSCode to debug the flask app.
 
+I use Conda to manage python environments, so set the environment up first.
 ```bash
 conda create --name=accela --file=requirements.txt
 conda activate accela
 ```
 
+Start a Redis instance with this:
+```bash
+docker run -d -p 6379:6379 redis:latest
+```
+
+Start celery with this:
+```bash
+. celery.env && ./scripts/start_celery_worker.sh
+```
+
+Now you are ready to debug the web app. 
 I use Visual Studio Code as my IDE, so this project includes a .vscode/launch.json file
-and a workspace file. I refer to code provided by Accela from time to time (accela/accela-rest-nodejs at github) and some I wrote myself which will be incorporated here
-today.
+and a workspace file. 
 
 ## Celery
 
+Celery is the task handler.
+Official documentation: 
 https://docs.celeryproject.org/en/latest/
 
-## Deploy
+## Redis
 
-I don't have the Python app dockerized yet but you still need Redis, so
-this step is required even in test mode.
+Redis is an in-memory database used to manage the task queue for Celery.
+
+You can monitor what is going on in the Redis server, 
+see https://redis.io/commands/monitor and try this:
+
+```bash
+docker exec -it your_image_name_bere redis-cli monitor
+```
+
+## Deployment
+
+All three components (web app, celery worker, redis) are dockerized. So once
+everything is functioning, you can deploy with Docker Swarm.
 
 ```bash
 docker stack deploy -c docker-compose.yml accela
 ```
 
-Testing Redis -- you should be able to launch the cli if the service is up.
-
-```bash
-docker exec -ti accela<TAB> redis-cli
-127.0.0.1:6379> quit
-$
-```
-
 ## TODO
 
-* Dockerize the Flask app.
 * Examine security, I think we're good because the containers will use isolated network
 once I dockerize the flask app.
 * Add healthchecks.
+* Move the Flask app to waitress.
+* Currently running always in debug mode from the start_app.py script. Fix that.

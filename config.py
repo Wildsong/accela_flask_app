@@ -1,5 +1,6 @@
 from logging import DEBUG
 import os
+import inspect
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -19,22 +20,59 @@ class Config(object):
 # Where data live
     TABLE_URL = os.environ.get('TABLE_URL')
 
-    pass
+# Celery stuff
+    CELERY_BROKER = os.environ.get('CELERY_BROKER')
+    CELERY_BACKEND = os.environ.get('CELERY_BACKEND')
+
+    enable_utc = True
+    timezone = 'America/Los_Angeles'
+
+    @staticmethod
+    def asdict(config):
+        d = {}
+        for k,v in inspect.getmembers(config):
+            # I am using callable() here to exclude asdict and init_app.
+            if not callable(v) and not k.startswith('__'): 
+                d[k] = v
+        return d
+
+    @staticmethod
+    def init_app(app):
+        pass
+
+class DevConfig(Config):
+    DEBUG = True
+
+class TestConfig(Config):
+    TESTING = True
+    DEBUG = True
 
 class ProdConfig(Config):
     DEBUG = False
 
 
-class DevConfig(Config):
-    DEBUG = True
+config = {
+    'development': DevConfig,
+    'testing': TestConfig,
+    'production': ProdConfig,
+    'default': DevConfig
+}
+
 
 
 if __name__ == "__main__":
+    config = config['testing']
+    dconfig = TestConfig.asdict(config)
+    print(dconfig)
 
-    assert Config.PORTAL_URL
-    assert Config.PORTAL_USER
-    assert Config.PORTAL_PASSWORD
-    assert Config.TABLE_URL
+    assert config.SECRET_KEY != type("")
+    assert config.PORTAL_URL != type("")
+    assert config.PORTAL_USER != type("")
+    assert config.PORTAL_PASSWORD != type("")
+    assert config.TABLE_URL != type("")
+
+    assert type(Config.enable_utc) == type(True)
+    assert config.timezone != type("")
     pass
 
 # That's all!

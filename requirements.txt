@@ -13,6 +13,7 @@ flask-debugtoolbar>=0.10.1
 pytz
 jinja2>=2.11.2
 blinker>=1.4
-
+python-dotenv>=0.15.0
 celery>=5.0.2
 redis-py>=3.5.3
+json2table

@@ -14,16 +14,7 @@
 			"path": "..\\accela-rest-nodejs"
 		},
 		{
-			"path": "..\\webforms"
-		},
-		{
-			"path": "../Mastering-Flask-Web-Development-Second-Edition"
-		},
-		{
 			"path": "../flask_template"
-		},
-		{
-			"path": "../pylette"
 		}
 	],
 	"settings": {}
