@@ -3,23 +3,27 @@ from flask import current_app as app
 from ..data import bigData
 
 
-@celery.task(name='Add')
-def Add(x,y):
+@celery.task(name='add')
+def add(x,y):
     """ Just add two integers together to test the whole Celery thing. """
     print("Add(%d, %d)" % (x,y))
     return x+y
 
 
-@celery.task(name='QueryParcels')
-def QueryParcels(query):
+@celery.task(name='queryparcels')
+def queryparcels(query):
     """ Query Accela and return results. """
     print("QueryParcels(%s)")
 
     layername = app.config["TABLE_URL"]
   
-    print("Loading data from %s", layername)
     dObj = bigData(app.config)
-    df = dObj.read_df(layername)
-
-    return df.to_html()
+    try:
+        df = dObj.read_df(layername)
+        #data = "Data from %s" % layername
+        data = df.to_html()
+    except Exception as e:
+        data = "Data fetch from %s failed, %s" % (layername, e)
+    
+    return data
 

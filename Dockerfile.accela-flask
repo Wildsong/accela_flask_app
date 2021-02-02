@@ -1,7 +1,7 @@
 FROM continuumio/miniconda3
 LABEL maintainer="Brian Wilson <brian@wildsong.biz>"
 LABEL version="1.0"
-LABEL biz.wildsong.name="flask-app-server"
+LABEL biz.wildsong.name="accela-flask"
 
 ENV SERVER_BASE /srv
 

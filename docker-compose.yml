@@ -1,16 +1,10 @@
 version: '3.7'
 
-# Starts three services,
-#
-# redis, a message queue
-# webapp, a web app implemented with flask
-# worker, a celery app
-#
-
-networks:
-  proxy_net:
-    name: proxy_net
-    external: true
+# Starts these services:
+#   redis, a message queue and in-memory database
+#   webapp, a web app implemented with flask; see port 5001
+#   worker, where celery taske run
+#   monitor, celery 'flower', a web app to monitor celery; see port 5555
 
 services:
   redis:
@@ -18,8 +12,6 @@ services:
   # there is an image based on Alpine but it uses an old Redis release.
     image: redis:latest
 #    env_file: docker.env
-#    ports:
-#      - "6379:6379" # This port only has to be visible inside this webapp.
     deploy:
       mode: global
       restart_policy:
@@ -27,24 +19,19 @@ services:
         delay: 5s
         window: 15s
     networks:
-      proxy_net:
+      default:
         aliases:
           - redis
 
   webapp:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: wildsong/accela:latest
+      dockerfile: Dockerfile.accela-flask
+    image: wildsong/accela-flask:latest
 #    env_file: .env
     environment:
       - PYTHONPATH=/srv
       - FLASK_APP=start_app
-#      VIRTUAL_HOST: ${FLASK_HOST}
-#      VIRTUAL_PORT: ${FLASK_PORT}
-#      NETWORK_ACCESS: internal
-#      LETSENCRYPT_HOST: ${FLASK_HOST}
-#      LETSENCRYPT_MAIL: ${MY_EMAIL}
       # without these, flask app cannot find redis.
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/0
@@ -54,15 +41,11 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
       - "/etc/timezone:/etc/timezone:ro"
     ports:
-      - 5001:5001
+      - 5002:5002
     user: app
-    networks:
-      proxy_net:
-        aliases:
-          - webapp
 
   worker:
-    image: wildsong/accela:latest
+    image: wildsong/accela-flask:latest
     environment:
       - PYTHONPATH=/srv
       # without these, celery tries to connect to RabbitMQ instead of REDIS.
@@ -72,10 +55,23 @@ services:
     volumes:
       - .:/srv
     user: app
-    networks:
-      proxy_net:
-        aliases:
-          - worker
+
+  monitor:
+    image: wildsong/celery-monitor:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.monitor
+    environment:
+      - PYTHONPATH=/srv
+      # without these, defaults to localhost.
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+    command: flower -A celery_worker
+    volumes:
+      - .:/srv
+    ports: 
+      - 5555:5555
+    user: app
 
 #    healthcheck:
 #      test: ["CMD", "curl", "-f", "http://localhost:8080/"]

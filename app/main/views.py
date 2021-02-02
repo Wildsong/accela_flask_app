@@ -6,7 +6,7 @@ from . import main
 from app.main.forms import AdditionForm
 
 from flask import current_app
-from .tasks import QueryParcels
+from .tasks import queryparcels
 from celery.result import AsyncResult
 
 def s2i(s):
@@ -29,7 +29,7 @@ def index():
 
         try:
             q = s2i(form.x.data)
-            task = QueryParcels.delay(q)
+            task = queryparcels.delay(q)
             async_result = AsyncResult(id=task.task_id, app=current_app.celery)
             some_parcels = async_result.get()
             #return z # I could render a totally different page here.

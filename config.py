@@ -18,7 +18,7 @@ class Config(object):
     PORTAL_PASSWORD = os.environ.get('PORTAL_PASSWORD')
 
 # Where data live
-    TABLE_URL = os.environ.get('TABLE_URL')
+    TABLE_URL = os.environ.get('TABLE_URL', "https://delta.co.clatsop.or.us/server/rest/services/Taxlots/FeatureServer/1")
 
 # Celery stuff
     CELERY_BROKER = os.environ.get('CELERY_BROKER')

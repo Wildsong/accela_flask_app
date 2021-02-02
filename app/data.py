@@ -66,13 +66,17 @@ class DataTestCase(unittest.TestCase):
     def test_loaddata(self):
         dconfig = TestConfig.asdict(self.configObj)
         coolBeans = bigData(dconfig)
-        df = coolBeans.read_sdf(dconfig['TABLE_URL'])
+        df = coolBeans.read_df(dconfig['TABLE_URL'])
 #        print(df.columns, len(df))
 #        print(df)
         self.assertTrue(len(df) > 0)
 
 if __name__ == "__main__":
     from config import config, TestConfig
+    tests = DataTestCase()
+    tests.setUp()
+    tests.test_loaddata()
+
     unittest.main()
     
 # That's all!
